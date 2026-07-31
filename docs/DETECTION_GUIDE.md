@@ -54,14 +54,24 @@ load to the preceding actor-target flow completes the built-in correlation.
 
 A finding requires all five actions in order within the same `flow_id`. Every
 matched event must keep the same actor PID, target PID, and module, and the actor
-and target PIDs must differ. Extra events may occur between required actions, but
-missing, reordered, or inconsistent required actions prevent the finding.
+and target PIDs must differ. Correlation sorts supplied records by the synthetic
+event-time `tick`, so delayed JSONL arrival does not break an otherwise complete
+sequence. Extra or duplicate events may occur between required actions, but missing,
+event-time-reordered, or inconsistent required actions prevent the finding.
 
 This contract makes three important tests straightforward:
 
 - Remove one event and confirm the finding disappears.
 - Change the flow ID of one event and confirm correlation breaks.
 - Set actor and target to the same PID and confirm the clean control stays clean.
+
+The CLI exposes those delivery cases without manual fixture editing:
+
+```bash
+dll-injection-lab demo --variant missing-thread
+dll-injection-lab demo --variant out-of-order-arrival
+dll-injection-lab demo --variant duplicate-write
+```
 
 ## Clean control
 

@@ -7,7 +7,7 @@ from jsonschema import validate
 from crossview_lab.analyzer import analyze_events
 from crossview_lab.detectors import DLL_INJECTION_SEQUENCE, detect_dll_injection_sequence
 from crossview_lab.errors import InputError
-from crossview_lab.simulator import load_event_stream, simulate_scenario
+from crossview_lab.simulator import STREAM_VARIANTS, load_event_stream, simulate_scenario
 
 
 def test_classic_scenario_is_deterministic_and_synthetic():
@@ -34,6 +34,75 @@ def test_cooperative_same_process_load_is_a_clean_control():
 
     assert detect_dll_injection_sequence(events) == []
     assert all(event["actor_pid"] == event["target_pid"] for event in events)
+
+
+@pytest.mark.parametrize(
+    ("variant", "expected_actions", "expected_ticks", "expected_findings"),
+    [
+        (
+            "missing-thread",
+            [
+                "cross_process_handle_open",
+                "remote_memory_allocation",
+                "remote_memory_write",
+                "image_load",
+            ],
+            [1, 2, 3, 5],
+            0,
+        ),
+        (
+            "out-of-order-arrival",
+            [
+                "cross_process_handle_open",
+                "remote_memory_allocation",
+                "remote_thread_start",
+                "remote_memory_write",
+                "image_load",
+            ],
+            [1, 2, 4, 3, 5],
+            1,
+        ),
+        (
+            "duplicate-write",
+            [
+                "cross_process_handle_open",
+                "remote_memory_allocation",
+                "remote_memory_write",
+                "remote_memory_write",
+                "remote_thread_start",
+                "image_load",
+            ],
+            [1, 2, 3, 3, 4, 5],
+            1,
+        ),
+    ],
+)
+def test_classic_stream_variants_model_delivery_failures(
+    variant, expected_actions, expected_ticks, expected_findings
+):
+    events = simulate_scenario("classic", variant=variant)
+
+    assert [event["action"] for event in events] == expected_actions
+    assert [event["tick"] for event in events] == expected_ticks
+    assert len(detect_dll_injection_sequence(events)) == expected_findings
+
+
+def test_stream_variants_are_complete_and_deterministic():
+    assert STREAM_VARIANTS == (
+        "complete",
+        "missing-thread",
+        "out-of-order-arrival",
+        "duplicate-write",
+    )
+    for variant in STREAM_VARIANTS:
+        assert simulate_scenario("classic", variant=variant) == simulate_scenario(
+            "classic", variant=variant
+        )
+
+
+def test_cooperative_scenario_rejects_classic_stream_variants():
+    with pytest.raises(InputError, match="only supported for the classic scenario"):
+        simulate_scenario("cooperative", variant="missing-thread")
 
 
 def test_incomplete_sequence_does_not_produce_a_finding():

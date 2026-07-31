@@ -13,7 +13,7 @@
 No VM. No administrator rights. No malware. Zero live processes touched.
 
 [![CI](https://github.com/bsmensah-ctrl/DLL-Injection-Lab/actions/workflows/ci.yml/badge.svg)](https://github.com/bsmensah-ctrl/DLL-Injection-Lab/actions/workflows/ci.yml)
-[![35 tests](https://img.shields.io/badge/tests-35%20passing-22c55e.svg)](tests)
+[![43 tests](https://img.shields.io/badge/tests-43%20passing-22c55e.svg)](tests)
 [![Python 3.10–3.13](https://img.shields.io/badge/python-3.10%E2%80%933.13-3776AB.svg)](https://www.python.org/)
 [![Zero runtime dependencies](https://img.shields.io/badge/runtime%20dependencies-0-8b5cf6.svg)](pyproject.toml)
 [![MITRE ATT&CK T1055.001](https://img.shields.io/badge/ATT%26CK-T1055.001-f59e0b.svg)](https://attack.mitre.org/techniques/T1055/001/)
@@ -69,6 +69,7 @@ analysts, instructors, and detection engineers.
 | Clean cooperative control | Prove the detector ignores an approved same-process plug-in load |
 | Explainable finding | See the exact matched actions, flow ID, PIDs, ticks, module, and ATT&CK mapping |
 | JSONL event generator | Feed deterministic telemetry into your own parser, SIEM demo, or unit test |
+| Delivery-failure variants | Drop, delay, or duplicate an event to test correlation resilience |
 | JSON, Markdown, and SARIF | Use the same result in scripts, reports, GitHub, or classroom submissions |
 | Offline boundary test | CI fails if live-process libraries or Windows process-memory APIs enter the package |
 | Zero runtime dependencies | Clone, install, and run—no service stack or agent required |
@@ -119,7 +120,19 @@ dll-injection-lab detect --events events.jsonl --format json
 Delete one event from the JSONL stream and rerun detection. The finding disappears,
 making the correlation requirement visible and easy to test.
 
-### 4. Turn it into a CI gate
+### 4. Test lossy and out-of-order delivery
+
+```bash
+dll-injection-lab demo --variant missing-thread
+dll-injection-lab demo --variant out-of-order-arrival
+dll-injection-lab demo --variant duplicate-write
+```
+
+`missing-thread` produces no finding. The out-of-order-arrival and duplicate-write
+variants still produce one finding because correlation uses the synthetic event-time
+`tick`, not JSONL line order, and ignores a repeated write before the thread event.
+
+### 5. Turn it into a CI gate
 
 ```bash
 dll-injection-lab detect \
@@ -201,9 +214,9 @@ ruff check .
 ruff format --check .
 ```
 
-The 35-test suite covers the simulator, ordered correlation, incomplete chains,
-same-process clean controls, malformed JSONL, artifact comparison, byte-prefix
-triage, schema validation, output formats, CLI composition, and the offline boundary.
+The test suite covers the simulator, ordered correlation, missing, delayed, and
+duplicate delivery, same-process clean controls, malformed JSONL, artifact comparison,
+byte-prefix triage, schema validation, output formats, CLI composition, and the offline boundary.
 GitHub Actions runs the suite on Python 3.10, 3.11, 3.12, and 3.13.
 
 ## Roadmap
