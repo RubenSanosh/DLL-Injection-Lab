@@ -1,0 +1,1 @@
+{"schema_version": "1.0.0", "scenario": "classic", "flow_id": "missing-field-001", "tick": 1, "actor_pid": 4100, "target_pid": 4200, "action": "cross_process_handle_open", "module": "", "description": "Synthetic event with an empty module field.", "synthetic": true}
