@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+title: CrossViewLab
+message: "If CrossViewLab supports your teaching or research, please cite the software."
+type: software
+authors:
+  - name: CrossViewLab contributors
+repository-code: "https://github.com/bsmensah-ctrl/CrossViewLab"
+url: "https://github.com/bsmensah-ctrl/CrossViewLab"
+version: 0.1.0
+date-released: 2026-07-31
+license: MIT

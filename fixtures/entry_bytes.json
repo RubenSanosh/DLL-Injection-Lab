@@ -1,0 +1,23 @@
+{
+  "source": "synthetic-entry-byte-export",
+  "samples": [
+    {
+      "component": "ntdll",
+      "symbol": "NtOpenProcess_clean_fixture",
+      "baseline_hex": "4c8bd1b8260000000f05c3",
+      "observed_hex": "4c8bd1b8260000000f05c3"
+    },
+    {
+      "component": "etw",
+      "symbol": "EtwEventWrite_ret_fixture",
+      "baseline_hex": "4c8bdc49895b0849896b10",
+      "observed_hex": "c390909090909090909090"
+    },
+    {
+      "component": "ntdll",
+      "symbol": "NtReadVirtualMemory_jump_fixture",
+      "baseline_hex": "4c8bd1b83f0000000f05c3",
+      "observed_hex": "e900000000909090909090"
+    }
+  ]
+}

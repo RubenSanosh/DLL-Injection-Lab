@@ -1,0 +1,29 @@
+{
+  "source": "synthetic-snapshot-export",
+  "processes": [
+    {
+      "pid": 100,
+      "ppid": 4,
+      "name": "System",
+      "path": "synthetic://windows/system",
+      "user": "NT AUTHORITY\\SYSTEM",
+      "command_line": "System"
+    },
+    {
+      "pid": 420,
+      "ppid": 100,
+      "name": "example-service.exe",
+      "path": "synthetic://program-files/example-service.exe",
+      "user": "NT AUTHORITY\\LOCAL SERVICE",
+      "command_line": "example-service.exe --service"
+    },
+    {
+      "pid": 900,
+      "ppid": 420,
+      "name": "snapshot-only.exe",
+      "path": "synthetic://lab/snapshot-only.exe",
+      "user": "LAB\\analyst",
+      "command_line": "snapshot-only.exe --fixture"
+    }
+  ]
+}

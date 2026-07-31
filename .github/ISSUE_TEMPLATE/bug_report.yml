@@ -1,0 +1,26 @@
+name: Bug report
+description: Report incorrect parsing, findings, output, or CLI behavior.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Remove sensitive host data before attaching any fixture.
+  - type: textarea
+    id: behavior
+    attributes:
+      label: What happened?
+      description: Include the command, actual result, and expected result.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: CrossViewLab and Python versions
+    validations:
+      required: true
+  - type: textarea
+    id: fixture
+    attributes:
+      label: Minimal sanitized fixture
+      render: json

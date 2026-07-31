@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="360" viewBox="0 0 1000 360" role="img" aria-labelledby="title desc">
+  <title id="title">CrossViewLab terminal demonstration</title>
+  <desc id="desc">A terminal showing an offline artifact analysis with six findings.</desc>
+  <rect width="1000" height="360" rx="18" fill="#0d1117"/>
+  <rect width="1000" height="48" rx="18" fill="#161b22"/>
+  <rect y="30" width="1000" height="18" fill="#161b22"/>
+  <circle cx="28" cy="24" r="7" fill="#ff5f56"/>
+  <circle cx="52" cy="24" r="7" fill="#ffbd2e"/>
+  <circle cx="76" cy="24" r="7" fill="#27c93f"/>
+  <text x="500" y="30" text-anchor="middle" fill="#8b949e" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="14">CrossViewLab · offline artifact analysis</text>
+  <g font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="16">
+    <text x="28" y="82" fill="#58a6ff">$ crossview-lab --baseline baseline.json --observed observed.json \</text>
+    <text x="48" y="108" fill="#58a6ff">--entry-bytes entry_bytes.json --format markdown</text>
+    <text x="28" y="150" fill="#f0f6fc" font-size="22" font-weight="700">CrossViewLab report</text>
+    <text x="28" y="184" fill="#8b949e">Mode:</text><text x="92" y="184" fill="#a5d6ff">offline-artifact-only</text>
+    <text x="28" y="212" fill="#8b949e">Findings:</text><text x="124" y="212" fill="#f2cc60">6</text>
+    <text x="28" y="252" fill="#ff7b72">HIGH</text><text x="102" y="252" fill="#c9d1d9">PID 777 is absent from the observed inventory</text>
+    <text x="28" y="280" fill="#d29922">MEDIUM</text><text x="110" y="280" fill="#c9d1d9">PID 900 appears only in the observed inventory</text>
+    <text x="28" y="308" fill="#ff7b72">HIGH</text><text x="102" y="308" fill="#c9d1d9">EtwEventWrite fixture differs from its supplied baseline</text>
+    <text x="28" y="336" fill="#8b949e">Supplied files only · triage signals, not proof of compromise</text>
+  </g>
+</svg>

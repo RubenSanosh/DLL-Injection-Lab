@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "crossview-lab"
+version = "0.1.0"
+description = "Offline cross-view tampering detection for exported process inventories and entry-byte fixtures."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{ name = "bsmensah-ctrl" }]
+keywords = [
+  "blue-team",
+  "detection-engineering",
+  "digital-forensics",
+  "rootkit-detection",
+  "security-lab",
+  "sarif",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Education",
+  "Intended Audience :: Information Technology",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Security",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+  "jsonschema>=4.23",
+  "pytest>=8.3",
+  "ruff>=0.9",
+]
+
+[project.scripts]
+crossview-lab = "crossview_lab.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/bsmensah-ctrl/CrossViewLab"
+Issues = "https://github.com/bsmensah-ctrl/CrossViewLab/issues"
+Source = "https://github.com/bsmensah-ctrl/CrossViewLab"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
