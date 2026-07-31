@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+    >
+    <meta
+      name="description"
+      content="Explore and break a synthetic DLL-injection telemetry chain without touching a live process."
+    >
+    <meta property="og:title" content="DLL Injection Lab — Interactive Detection Demo">
+    <meta
+      property="og:description"
+      content="Simulate. Detect. Learn. Zero live processes touched."
+    >
+    <meta
+      property="og:image"
+      content="https://bsmensah-ctrl.github.io/DLL-Injection-Lab/social-preview.jpg"
+    >
+    <meta property="og:type" content="website">
+    <meta
+      property="og:url"
+      content="https://bsmensah-ctrl.github.io/DLL-Injection-Lab/"
+    >
+    <title>DLL Injection Lab — Interactive Detection Demo</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="demo.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#lab">Skip to the lab</a>
+
+    <header class="site-header">
+      <a class="brand" href="https://github.com/bsmensah-ctrl/DLL-Injection-Lab">
+        <span class="brand-mark" aria-hidden="true">DIL</span>
+        <span>DLL Injection Lab</span>
+      </a>
+      <nav aria-label="Project links">
+        <a href="https://github.com/bsmensah-ctrl/DLL-Injection-Lab">Source</a>
+        <a href="https://github.com/bsmensah-ctrl/DLL-Injection-Lab/releases/tag/v0.2.0">v0.2.0</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="pulse" aria-hidden="true"></span> Interactive blue-team lab</p>
+          <h1 id="hero-title">See the signal.<br><span>Break the chain.</span></h1>
+          <p class="lede">
+            Explore the five telemetry events behind a classic DLL-injection detection—without
+            injecting a DLL, opening a process, or installing an agent.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#lab">Run the demo</a>
+            <a class="button secondary" href="https://github.com/bsmensah-ctrl/DLL-Injection-Lab">
+              View on GitHub <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+          <ul class="proof-list" aria-label="Project facts">
+            <li><strong>0</strong><span>runtime dependencies</span></li>
+            <li><strong>32</strong><span>passing tests</span></li>
+            <li><strong>5</strong><span>correlated signals</span></li>
+          </ul>
+        </div>
+        <div class="hero-visual" aria-label="Synthetic telemetry visualization">
+          <div class="radar" aria-hidden="true">
+            <span class="radar-ring ring-one"></span>
+            <span class="radar-ring ring-two"></span>
+            <span class="radar-ring ring-three"></span>
+            <span class="radar-sweep"></span>
+            <span class="radar-core">01</span>
+          </div>
+          <div class="safety-chip"><span aria-hidden="true">✓</span> Zero live processes touched</div>
+        </div>
+      </section>
+
+      <section class="lab" id="lab" aria-labelledby="lab-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Correlation playground</p>
+            <h2 id="lab-title">Build or break the detection</h2>
+          </div>
+          <p>
+            Toggle any stage. The detector only fires when all five ordered events retain one
+            actor, target, module, and flow.
+          </p>
+        </div>
+
+        <div class="control-bar" role="group" aria-label="Scenario controls">
+          <button class="control active" type="button" data-scenario="classic" aria-pressed="true">
+            <span class="control-dot danger"></span> Classic sequence
+          </button>
+          <button class="control" type="button" data-scenario="cooperative" aria-pressed="false">
+            <span class="control-dot safe"></span> Clean control
+          </button>
+          <button class="control reset" type="button" id="reset-events">Reset events</button>
+        </div>
+
+        <div class="lab-grid">
+          <div class="chain-panel">
+            <div class="chain-header">
+              <span>EVENT STREAM</span>
+              <span id="event-count">5 / 5 active</span>
+            </div>
+            <ol class="event-chain" id="event-chain" aria-label="Synthetic event chain"></ol>
+            <p class="interaction-hint">Click an event to remove or restore it.</p>
+          </div>
+
+          <aside class="result-panel" aria-live="polite" aria-atomic="true">
+            <div class="result-topline">
+              <span>DETECTOR RESULT</span>
+              <span class="live-label"><span class="pulse"></span> LIVE</span>
+            </div>
+            <div id="result-card" class="result-card finding">
+              <div id="result-icon" class="result-icon" aria-hidden="true">!</div>
+              <p id="result-kicker" class="result-kicker">HIGH CONFIDENCE</p>
+              <h3 id="result-title">Synthetic sequence detected</h3>
+              <p id="result-copy">
+                The complete ordered chain was correlated inside one fictional process flow.
+              </p>
+            </div>
+            <dl class="evidence" id="evidence-list">
+              <div><dt>Technique</dt><dd>T1055.001</dd></div>
+              <div><dt>Flow</dt><dd>classic-dll-injection-001</dd></div>
+              <div><dt>Actor → target</dt><dd>4100 → 4200</dd></div>
+              <div><dt>Module</dt><dd>synthetic://lab/telemetry-demo.dll</dd></div>
+            </dl>
+            <button class="json-toggle" type="button" id="json-toggle" aria-expanded="false">
+              View JSON evidence <span aria-hidden="true">⌄</span>
+            </button>
+            <pre id="json-output" class="json-output" hidden></pre>
+          </aside>
+        </div>
+      </section>
+
+      <section class="boundary" aria-labelledby="boundary-title">
+        <div class="boundary-icon" aria-hidden="true">◇</div>
+        <div>
+          <p class="eyebrow">The hard boundary</p>
+          <h2 id="boundary-title">Telemetry, never technique.</h2>
+          <p>
+            This page runs a deterministic JavaScript visualization. It makes no network requests,
+            collects no analytics, and cannot enumerate, open, read, write, or execute a process.
+            Every PID, module, tick, and finding is fictional.
+          </p>
+        </div>
+      </section>
+
+      <section class="cta" aria-labelledby="cta-title">
+        <p class="eyebrow">Ready for the full lab?</p>
+        <h2 id="cta-title">Clone it. Test it. Extend it.</h2>
+        <p>Get JSONL fixtures, Markdown/JSON/SARIF output, CI examples, and the Python detector.</p>
+        <div class="hero-actions centered">
+          <a class="button primary" href="https://github.com/bsmensah-ctrl/DLL-Injection-Lab">
+            Star on GitHub <span aria-hidden="true">★</span>
+          </a>
+          <a class="button secondary" href="https://github.com/bsmensah-ctrl/DLL-Injection-Lab#your-first-detection-in-60-seconds">
+            Run locally
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>DLL Injection Lab · MIT licensed · synthetic by design</span>
+      <a href="https://attack.mitre.org/techniques/T1055/001/">ATT&amp;CK T1055.001 ↗</a>
+    </footer>
+  </body>
+</html>

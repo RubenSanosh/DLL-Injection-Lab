@@ -13,7 +13,7 @@
 No VM. No administrator rights. No malware. Zero live processes touched.
 
 [![CI](https://github.com/bsmensah-ctrl/DLL-Injection-Lab/actions/workflows/ci.yml/badge.svg)](https://github.com/bsmensah-ctrl/DLL-Injection-Lab/actions/workflows/ci.yml)
-[![30 tests](https://img.shields.io/badge/tests-30%20passing-22c55e.svg)](tests)
+[![32 tests](https://img.shields.io/badge/tests-32%20passing-22c55e.svg)](tests)
 [![Python 3.10–3.13](https://img.shields.io/badge/python-3.10%E2%80%933.13-3776AB.svg)](https://www.python.org/)
 [![Zero runtime dependencies](https://img.shields.io/badge/runtime%20dependencies-0-8b5cf6.svg)](pyproject.toml)
 [![MITRE ATT&CK T1055.001](https://img.shields.io/badge/ATT%26CK-T1055.001-f59e0b.svg)](https://attack.mitre.org/techniques/T1055/001/)
@@ -22,6 +22,9 @@ No VM. No administrator rights. No malware. Zero live processes touched.
 **If this saves you an afternoon of lab setup, ⭐ star it so another defender finds it.**
 
 </div>
+
+> **No install?** [Run the interactive browser demo](https://bsmensah-ctrl.github.io/DLL-Injection-Lab/)
+> and remove events from the chain to watch the finding disappear.
 
 ## Your first detection in 60 seconds
 
@@ -198,7 +201,7 @@ ruff check .
 ruff format --check .
 ```
 
-The 30-test suite covers the simulator, ordered correlation, incomplete chains,
+The 32-test suite covers the simulator, ordered correlation, incomplete chains,
 same-process clean controls, malformed JSONL, artifact comparison, byte-prefix
 triage, schema validation, output formats, CLI composition, and the offline boundary.
 GitHub Actions runs the suite on Python 3.10, 3.11, 3.12, and 3.13.

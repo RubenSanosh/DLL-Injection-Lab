@@ -21,6 +21,9 @@ and SARIF included.
 
 Try it in 60 seconds: https://github.com/bsmensah-ctrl/DLL-Injection-Lab
 
+Or use the zero-install interactive demo:
+https://bsmensah-ctrl.github.io/DLL-Injection-Lab/
+
 If it saves you lab setup time, a ⭐ helps other defenders find it.
 
 ## LinkedIn post
@@ -34,7 +37,7 @@ handle, remote allocation, remote write, remote thread, and module load—then
 correlates it into an explainable ATT&CK T1055.001 finding. It also includes a
 same-process cooperative plug-in load as a clean control.
 
-The project has zero runtime dependencies, 30 tests, Python 3.10–3.13 CI, and
+The project has zero runtime dependencies, 32 tests, Python 3.10–3.13 CI, and
 JSON, Markdown, and SARIF output. It never calls a Windows process-memory API.
 
 Repository: https://github.com/bsmensah-ctrl/DLL-Injection-Lab
@@ -50,7 +53,7 @@ no live process access
 without requiring students to run an injector. This project generates a fully
 synthetic five-event sequence, correlates it to ATT&CK T1055.001, and includes a
 cooperative same-process load as a clean control. You can delete or reorder JSONL
-events to see exactly when the detection fails. Zero runtime dependencies and 30
+events to see exactly when the detection fails. Zero runtime dependencies and 32
 tests. I would especially value feedback on the event contract and future safe
 scenarios: https://github.com/bsmensah-ctrl/DLL-Injection-Lab
 
