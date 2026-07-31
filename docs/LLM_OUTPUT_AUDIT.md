@@ -1,6 +1,6 @@
 # Local-LLM output audit
 
-CrossViewLab grew out of an experiment that connected a local `llama3.1:8b`
+DLL Injection Lab grew out of an experiment that connected a local `llama3.1:8b`
 model to a PentestGPT-style coding workflow. The connection worked; the code
 generation did not meet a publishable standard. This page records the negative
 results because they are more useful than pretending the first output worked.
@@ -25,7 +25,7 @@ machine-specific context can disclose more than a reusable fixture pack should.
 | Generated examples referenced undefined functions and variables | The examples could not satisfy their own tests | Excluded |
 | CLI usage prose appeared inside source-code blocks | Copying the answer did not create a runnable project | Replaced with an actual `argparse` CLI |
 | A claimed offline simulator later imported `psutil`, enumerated live processes, and called process termination | The implementation contradicted its stated boundary | Excluded and guarded against by a regression test |
-| An offline trial workspace later gained a Windows live-memory collector | The workspace no longer matched its own experimental contract | Not included in CrossViewLab |
+| An offline trial workspace later gained a Windows live-memory collector | The workspace no longer matched its own experimental contract | Not included in DLL Injection Lab |
 | Example measurements used hard-coded PIDs, timestamps, hashes, and latency values | Fabricated measurements are not experimental evidence | Replaced with synthetic fixture IDs or omitted |
 | Comments were embedded in nominal JSON | The examples were invalid JSON | Replaced with strict JSON fixtures and schema validation |
 | The model sometimes refused a safe fixture request and sometimes returned unsafe live-host behavior | Prompt wording was not a reliable control boundary | The boundary is enforced in code and tests |
@@ -40,7 +40,7 @@ Four ideas were coherent enough to retain:
    small set of entry prefixes.
 4. Emit a versioned report and validate it with deterministic tests.
 
-Those ideas were independently implemented in CrossViewLab. No source file was
+Those ideas were independently implemented in DLL Injection Lab. No source file was
 copied from the generated transcript.
 
 ## Reproduction evidence
@@ -87,6 +87,6 @@ Before using model-generated security code in a report or repository:
 ## Bottom line
 
 The local model was useful for generating candidate structure, but it was not a
-reliable coder or experimental witness in this run. CrossViewLab's public claims
+reliable coder or experimental witness in this run. DLL Injection Lab's public claims
 come from executable tests, schema validation, package builds, and CI—not from
 the model's confidence or prose.

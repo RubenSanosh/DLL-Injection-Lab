@@ -1,166 +1,195 @@
+<p align="center">
+  <img src="docs/social-preview.jpg" alt="DLL Injection Lab — Simulate. Detect. Learn." width="100%">
+</p>
+
 <div align="center">
 
-# CrossViewLab
+# DLL Injection Lab 🧪
 
-**Catch cross-view gaps before they become blind spots.**
+### See the full DLL-injection telemetry chain—without injecting a DLL.
 
-Offline, zero-runtime-dependency analysis for exported process inventories and
-function-entry byte fixtures—with JSON, Markdown, and GitHub SARIF output.
+**Simulate it. Detect it. Break the sequence. Prove your rule works.**
 
-[![CI](https://github.com/bsmensah-ctrl/CrossViewLab/actions/workflows/ci.yml/badge.svg)](https://github.com/bsmensah-ctrl/CrossViewLab/actions/workflows/ci.yml)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776AB.svg)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Offline only](https://img.shields.io/badge/data%20access-offline%20artifacts-blue.svg)](#safety-boundary)
+No VM. No administrator rights. No malware. Zero live processes touched.
+
+[![CI](https://github.com/bsmensah-ctrl/DLL-Injection-Lab/actions/workflows/ci.yml/badge.svg)](https://github.com/bsmensah-ctrl/DLL-Injection-Lab/actions/workflows/ci.yml)
+[![30 tests](https://img.shields.io/badge/tests-30%20passing-22c55e.svg)](tests)
+[![Python 3.10–3.13](https://img.shields.io/badge/python-3.10%E2%80%933.13-3776AB.svg)](https://www.python.org/)
+[![Zero runtime dependencies](https://img.shields.io/badge/runtime%20dependencies-0-8b5cf6.svg)](pyproject.toml)
+[![MITRE ATT&CK T1055.001](https://img.shields.io/badge/ATT%26CK-T1055.001-f59e0b.svg)](https://attack.mitre.org/techniques/T1055/001/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-14b8a6.svg)](LICENSE)
+
+**If this saves you an afternoon of lab setup, ⭐ star it so another defender finds it.**
 
 </div>
 
-![CrossViewLab terminal demo](docs/demo.svg)
-
-CrossViewLab gives detection engineers, incident-response students, and lab
-authors a small reproducible way to test two useful ideas:
-
-1. **Cross-view comparison:** does one exported process inventory omit or alter
-   a record found in another?
-2. **Entry-byte triage:** do supplied function-entry bytes differ from a supplied
-   baseline or begin with a common jump/return indicator?
-
-It analyzes files you provide. It does **not** enumerate the host, open a
-process, read memory, load a driver, hook an API, or modify the operating system.
-
-## 60-second demo
+## Your first detection in 60 seconds
 
 ```bash
-git clone https://github.com/bsmensah-ctrl/CrossViewLab.git
-cd CrossViewLab
+git clone https://github.com/bsmensah-ctrl/DLL-Injection-Lab.git
+cd DLL-Injection-Lab
 python -m pip install -e .
+dll-injection-lab demo
+```
 
-crossview-lab \
+```text
+# DLL Injection Lab report
+
+- Mode: synthetic-event-only
+- Findings: 1
+
+| Severity | Finding | Evidence |
+|---|---|---|
+| HIGH | Synthetic DLL-injection sequence detected | classic-dll-injection-001 |
+```
+
+That result came from a deterministic five-event chain generated entirely in
+memory. Nothing was injected, opened, downloaded, hidden, or executed.
+
+## Why this exists
+
+Most DLL-injection labs force you to choose between two bad options:
+
+- Run offensive proof-of-concept code in a Windows VM just to produce telemetry.
+- Read a slide deck and never test whether a detection rule actually correlates.
+
+DLL Injection Lab gives you the useful middle: **the observable event chain,
+clean controls, correlation logic, and portable reports—without the dangerous
+mechanism.** It is an ethical hacking lab built for defenders, students, SOC
+analysts, instructors, and detection engineers.
+
+## What you get
+
+| Capability | Why it matters |
+|---|---|
+| 🧬 Full synthetic injection chain | Practice correlating five signals instead of matching one noisy event |
+| 🟢 Clean cooperative control | Prove the detector ignores an approved same-process plug-in load |
+| 🧠 Explainable finding | See the exact matched actions, flow ID, PIDs, ticks, module, and ATT&CK mapping |
+| 📦 JSONL event generator | Feed deterministic telemetry into your own parser, SIEM demo, or unit test |
+| 📊 JSON, Markdown, and SARIF | Use the same result in scripts, reports, GitHub, or classroom submissions |
+| 🧱 Offline boundary test | CI fails if live-process libraries or Windows process-memory APIs enter the package |
+| ⚡ Zero runtime dependencies | Clone, install, and run—no service stack or agent required |
+
+## The chain your detector must catch
+
+The built-in `classic` scenario emits these synthetic observations in order:
+
+```mermaid
+flowchart LR
+  A["1 · Cross-process handle"] --> B["2 · Remote memory allocation"]
+  B --> C["3 · Remote memory write"]
+  C --> D["4 · Remote thread start"]
+  D --> E["5 · Module image load"]
+  E --> F["HIGH · Correlated finding"]
+```
+
+The detector requires the complete ordered sequence within one correlation flow
+and rejects same-process activity. Read the [detection guide](docs/DETECTION_GUIDE.md)
+for signal meaning, benign explanations, and ATT&CK context.
+
+## Try the lab
+
+### 1. Catch the classic sequence
+
+```bash
+dll-injection-lab demo
+```
+
+Expected: **1 high-severity finding** across 5 synthetic events.
+
+### 2. Run the clean control
+
+```bash
+dll-injection-lab demo --scenario cooperative
+```
+
+Expected: **0 findings**. The fictional host and target are the same process and
+the plug-in load follows explicit synthetic user approval.
+
+### 3. Inspect the raw telemetry
+
+```bash
+dll-injection-lab simulate --scenario classic --output events.jsonl
+dll-injection-lab detect --events events.jsonl --format json
+```
+
+Delete one event from the JSONL stream and rerun detection. The finding disappears,
+making the correlation requirement visible and easy to test.
+
+### 4. Turn it into a CI gate
+
+```bash
+dll-injection-lab detect \
+  --events events.jsonl \
+  --format sarif \
+  --output dll-injection.sarif \
+  --fail-on-findings
+```
+
+The CLI exits `1` when findings exist only if `--fail-on-findings` is supplied.
+Default runs remain exploration-friendly.
+
+## What a finding contains
+
+```json
+{
+  "type": "synthetic-dll-injection-sequence",
+  "severity": "high",
+  "evidence": {
+    "flow_id": "classic-dll-injection-001",
+    "actor_pid": 4100,
+    "target_pid": 4200,
+    "module": "synthetic://lab/telemetry-demo.dll",
+    "matched_actions": [
+      "cross_process_handle_open",
+      "remote_memory_allocation",
+      "remote_memory_write",
+      "remote_thread_start",
+      "image_load"
+    ],
+    "attack_technique": "T1055.001",
+    "synthetic": true
+  }
+}
+```
+
+Every identifier and URI above is fictional and deterministic.
+
+## More than one lab
+
+The original CrossView engine remains available as a secondary artifact-analysis
+mode. It compares supplied process-inventory exports and inspects supplied
+function-entry bytes without collecting anything from the host:
+
+```bash
+dll-injection-lab artifacts \
   --baseline fixtures/inventory_baseline.json \
   --observed fixtures/inventory_observed.json \
   --entry-bytes fixtures/entry_bytes.json \
   --format markdown
 ```
 
-Windows PowerShell:
+## Safety promise
 
-```powershell
-crossview-lab `
-  --baseline fixtures/inventory_baseline.json `
-  --observed fixtures/inventory_observed.json `
-  --entry-bytes fixtures/entry_bytes.json `
-  --format markdown
-```
+This project simulates **telemetry**, not injection. The package contains no
+`ctypes`, `psutil`, `socket`, `subprocess`, or `winreg` imports and no Windows
+process-memory API calls. It never enumerates the host, opens a process, allocates
+remote memory, writes to another process, starts a thread, loads a DLL, or requests
+administrator privileges.
 
-No install is required for a source checkout:
+A dedicated regression test scans the package and fails if prohibited imports or
+API tokens appear. The `synthetic=true` declaration is mandatory on every imported
+event.
 
-```bash
-PYTHONPATH=src python -m crossview_lab --baseline fixtures/inventory_baseline.json --observed fixtures/inventory_observed.json
-```
+## Built for
 
-## What it detects
+- **Detection engineers** testing multi-event correlation logic.
+- **SOC analysts** learning what an injection sequence looks like in telemetry.
+- **Cybersecurity students** who need a repeatable ethical DLL-injection lab.
+- **Instructors** who want clean and suspicious controls with expected results.
+- **Tool builders** who need small JSONL fixtures and SARIF examples.
 
-| Signal | Example interpretation | Severity |
-|---|---|---|
-| Baseline PID absent from observed export | A record may have been filtered, collection may have raced, or permissions may differ | High |
-| PID appears only in observed export | A new process, stale baseline, or collection race | Medium |
-| Shared PID has inconsistent fields | PID reuse, collection drift, or altered metadata | Medium |
-| Observed entry bytes differ from supplied baseline | Version mismatch, patching, or instrumentation | High |
-| Entry begins with `RET`, `XOR EAX,EAX; RET`, or a jump | A triage-worthy stub or trampoline | Medium–High |
-
-These are **triage signals, not proof of compromise**. Cross-view results can
-also be caused by timing, access level, PID reuse, software version differences,
-or inconsistent exporters.
-
-## Outputs built for real workflows
-
-```bash
-# Machine-readable report
-crossview-lab ... --format json --output report.json
-
-# Human review
-crossview-lab ... --format markdown --output report.md
-
-# GitHub code scanning / SARIF viewers
-crossview-lab ... --format sarif --output crossview.sarif
-
-# Make findings fail a CI job
-crossview-lab ... --fail-on-findings
-```
-
-The JSON report contract is versioned in
-[`schemas/report.schema.json`](schemas/report.schema.json). SARIF uses synthetic
-artifact URIs and embeds the exact supplied evidence in result properties.
-
-## Input format
-
-Inventory exports need a source label and unique non-negative PIDs:
-
-```json
-{
-  "source": "trusted-export",
-  "processes": [
-    {
-      "pid": 420,
-      "ppid": 100,
-      "name": "example-service.exe",
-      "path": "synthetic://program-files/example-service.exe",
-      "user": "LAB\\analyst",
-      "command_line": "example-service.exe --service"
-    }
-  ]
-}
-```
-
-Entry-byte artifacts can provide an observed value alone or pair it with a
-baseline:
-
-```json
-{
-  "source": "offline-memory-export",
-  "samples": [
-    {
-      "component": "ntdll",
-      "symbol": "ExampleSymbol",
-      "baseline_hex": "4c8bd1b8260000000f05c3",
-      "observed_hex": "4c8bd1b8260000000f05c3"
-    }
-  ]
-}
-```
-
-See [the fixture guide](docs/FIXTURES.md) for validation rules and clean-case
-design.
-
-## How it works
-
-```mermaid
-flowchart LR
-  A["Baseline inventory JSON"] --> C["Strict validation"]
-  B["Observed inventory JSON"] --> C
-  D["Optional entry-byte JSON"] --> C
-  C --> E["Pure comparison and prefix checks"]
-  E --> F["Versioned report"]
-  F --> G["JSON"]
-  F --> H["Markdown"]
-  F --> I["SARIF"]
-```
-
-The core is intentionally boring: deterministic parsing, set comparison, field
-comparison, and entry-prefix checks. There is no agent, model, network client,
-or platform-specific runtime dependency in the package.
-
-## Safety boundary
-
-CrossViewLab is an artifact analyzer, not a live endpoint scanner. Its package
-contains no `ctypes`, `psutil`, `socket`, `subprocess`, or `winreg` imports and no
-Windows process-memory API calls. A regression test enforces that boundary.
-
-This design makes the project safe to use in classrooms, CI, fixture-driven
-detection exercises, and report reproduction. It also means CrossViewLab cannot
-tell you what is currently running on a machine; acquisition belongs to a
-separate, explicitly authorized workflow.
-
-## Development
+## Verify it yourself
 
 ```bash
 python -m pip install -e ".[dev]"
@@ -169,33 +198,40 @@ ruff check .
 ruff format --check .
 ```
 
-The test suite covers malformed inputs, clean cases, inventory discrepancies,
-byte-prefix logic, report schema validation, all three output formats, CLI exit
-codes, and the offline-only boundary.
+The 30-test suite covers the simulator, ordered correlation, incomplete chains,
+same-process clean controls, malformed JSONL, artifact comparison, byte-prefix
+triage, schema validation, output formats, CLI composition, and the offline boundary.
+GitHub Actions runs the suite on Python 3.10, 3.11, 3.12, and 3.13.
 
 ## Roadmap
 
-- [ ] Pluggable normalization profiles for common inventory exporters
-- [ ] Timeline-aware comparison to reduce collection-race false positives
-- [ ] HTML report renderer with evidence filtering
-- [ ] Additional fixture packs contributed by the community
-- [ ] Signed report manifests for classroom and CI provenance
+- [ ] Additional safe scenarios: section mapping, thread hijack telemetry, and APC-style event chains
+- [ ] Sigma and KQL rule examples driven by the same synthetic fixtures
+- [ ] Timeline visualization and interactive event removal
+- [ ] Import adapters for sanitized Sysmon and EDR exports
+- [ ] Instructor packs with challenge and answer fixtures
+- [ ] Signed scenario manifests for reproducible classroom exercises
 
-Contributions are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) and keep
-new features inside the offline-artifact boundary.
+Have an idea? Open a [feature request](https://github.com/bsmensah-ctrl/DLL-Injection-Lab/issues/new/choose)
+or send a pull request. New scenarios must remain synthetic and deterministic.
 
-## Origin and evidence quality
+## Evidence over hype
 
-CrossViewLab was built from a local-LLM security-lab experiment whose generated
-code was not runnable and whose later output crossed its stated offline boundary.
-The implementation in this repository was rewritten, tested, and scoped around
-the reusable defensive idea rather than publishing those unverified outputs.
-No claim in this repository depends on the model-generated transcript.
+The first local-LLM prototype produced broken mixed-language code and later crossed
+its own stated offline boundary. This repository was independently rewritten and
+its claims come from executable tests, schemas, package builds, and CI. The
+[LLM output audit](docs/LLM_OUTPUT_AUDIT.md) shows exactly what failed and what was
+discarded.
 
-The [local-LLM output audit](docs/LLM_OUTPUT_AUDIT.md) records the failed outputs,
-the parts that survived review, and a reusable ten-point checklist for evaluating
-generated security code.
+## Help the project grow
+
+If you learned something, used a fixture, or saved setup time:
+
+1. ⭐ **Star the repository**—it is the clearest signal that this should keep growing.
+2. 🧪 Add a synthetic scenario or clean control.
+3. 📣 Share the 60-second demo with a SOC, blue-team, or cybersecurity class.
+4. 🐛 Report false positives or confusing evidence.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT — use it, teach with it, and improve it. See [LICENSE](LICENSE).

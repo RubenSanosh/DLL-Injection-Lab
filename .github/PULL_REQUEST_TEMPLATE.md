@@ -1,6 +1,6 @@
 ## What changed
 
-Describe the user-visible behavior and why it belongs in CrossViewLab.
+Describe the user-visible behavior and why it belongs in DLL Injection Lab.
 
 ## Verification
 

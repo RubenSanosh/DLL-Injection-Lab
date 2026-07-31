@@ -1,6 +1,7 @@
-"""Offline cross-view analysis for supplied security artifacts."""
+"""Synthetic DLL-injection detection and offline cross-view analysis."""
 
-from .analyzer import analyze
+from .analyzer import analyze, analyze_events
+from .simulator import simulate_scenario
 
-__all__ = ["analyze"]
-__version__ = "0.1.0"
+__all__ = ["analyze", "analyze_events", "simulate_scenario"]
+__version__ = "0.2.0"

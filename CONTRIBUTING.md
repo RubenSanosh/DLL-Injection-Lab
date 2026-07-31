@@ -1,7 +1,7 @@
-# Contributing
+# Contributing to DLL Injection Lab
 
-CrossViewLab welcomes small, testable improvements to artifact parsing,
-comparison logic, report formats, documentation, and synthetic fixture packs.
+DLL Injection Lab welcomes small, testable improvements to synthetic scenarios,
+detection logic, artifact parsing, report formats, documentation, and fixture packs.
 
 ## Ground rules
 

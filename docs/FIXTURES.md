@@ -1,6 +1,6 @@
 # Fixture design guide
 
-CrossViewLab treats every input as an exported artifact. It never decides how an
+DLL Injection Lab treats every artifact-mode input as an exported artifact. It never decides how an
 artifact was acquired and never attempts acquisition itself.
 
 ## Inventory contract
@@ -43,5 +43,5 @@ validate a generated JSON report against `schemas/report.schema.json`.
 
 A cross-view discrepancy is ambiguous by design. Collection timing, permissions,
 PID reuse, exporter bugs, software updates, instrumentation, and actual tampering
-can all produce similar observations. Use CrossViewLab to make the discrepancy
+can all produce similar observations. Use DLL Injection Lab to make the discrepancy
 reproducible, then corroborate it with authorized evidence from your environment.

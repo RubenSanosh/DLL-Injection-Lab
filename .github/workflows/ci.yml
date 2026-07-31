@@ -29,9 +29,6 @@ jobs:
       - run: ruff format --check .
       - name: Exercise the demo contract
         run: >-
-          crossview-lab
-          --baseline fixtures/inventory_baseline.json
-          --observed fixtures/inventory_observed.json
-          --entry-bytes fixtures/entry_bytes.json
+          dll-injection-lab demo
           --format sarif
-          --output crossview.sarif
+          --output dll-injection.sarif

@@ -3,15 +3,16 @@ requires = ["setuptools>=69"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "crossview-lab"
-version = "0.1.0"
-description = "Offline cross-view tampering detection for exported process inventories and entry-byte fixtures."
+name = "dll-injection-lab"
+version = "0.2.0"
+description = "Simulate and detect DLL-injection telemetry without touching a live process."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 authors = [{ name = "bsmensah-ctrl" }]
 keywords = [
   "blue-team",
+  "dll-injection",
   "detection-engineering",
   "digital-forensics",
   "rootkit-detection",
@@ -37,12 +38,13 @@ dev = [
 ]
 
 [project.scripts]
+dll-injection-lab = "crossview_lab.cli:main"
 crossview-lab = "crossview_lab.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/bsmensah-ctrl/CrossViewLab"
-Issues = "https://github.com/bsmensah-ctrl/CrossViewLab/issues"
-Source = "https://github.com/bsmensah-ctrl/CrossViewLab"
+Homepage = "https://github.com/bsmensah-ctrl/DLL-Injection-Lab"
+Issues = "https://github.com/bsmensah-ctrl/DLL-Injection-Lab/issues"
+Source = "https://github.com/bsmensah-ctrl/DLL-Injection-Lab"
 
 [tool.setuptools]
 package-dir = { "" = "src" }

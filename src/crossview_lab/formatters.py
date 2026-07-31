@@ -12,25 +12,31 @@ def to_json(report: dict[str, Any]) -> str:
 
 def to_markdown(report: dict[str, Any]) -> str:
     lines = [
-        "# CrossViewLab report",
+        "# DLL Injection Lab report",
         "",
         f"- Mode: `{report['mode']}`",
         f"- Findings: **{report['summary']['finding_count']}**",
         "",
     ]
     if not report["findings"]:
-        lines.append("No discrepancies or supplied entry-byte indicators were found.")
+        lines.append("No matching synthetic sequence or artifact discrepancy was found.")
         return "\n".join(lines) + "\n"
 
     lines.extend(["| Severity | Finding | Evidence |", "|---|---|---|"])
     for finding in report["findings"]:
         evidence = finding["evidence"]
-        subject = evidence.get("pid") or evidence.get("symbol") or evidence.get("source")
+        subject = (
+            evidence.get("flow_id")
+            or evidence.get("pid")
+            or evidence.get("symbol")
+            or evidence.get("source")
+        )
         lines.append(f"| {finding['severity'].upper()} | {finding['title']} | `{subject}` |")
     lines.extend(
         [
             "",
-            "> CrossViewLab analyzed supplied files only. Findings are triage signals, "
+            "> DLL Injection Lab analyzed synthetic or supplied data only. "
+            "Findings are triage signals, "
             "not proof of compromise.",
         ]
     )
@@ -48,7 +54,7 @@ def to_sarif(report: dict[str, Any]) -> str:
             {
                 "id": rule_id,
                 "shortDescription": {"text": finding["title"]},
-                "helpUri": "https://github.com/bsmensah-ctrl/CrossViewLab#what-it-detects",
+                "helpUri": "https://github.com/bsmensah-ctrl/DLL-Injection-Lab#what-it-detects",
             },
         )
         evidence = finding["evidence"]
@@ -76,9 +82,9 @@ def to_sarif(report: dict[str, Any]) -> str:
             {
                 "tool": {
                     "driver": {
-                        "name": "CrossViewLab",
+                        "name": "DLL Injection Lab",
                         "version": report["tool"]["version"],
-                        "informationUri": "https://github.com/bsmensah-ctrl/CrossViewLab",
+                        "informationUri": "https://github.com/bsmensah-ctrl/DLL-Injection-Lab",
                         "rules": list(rules.values()),
                     }
                 },

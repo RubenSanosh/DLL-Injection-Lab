@@ -38,7 +38,7 @@ def test_markdown_renderer_contains_triage_disclaimer():
 
     rendered = to_markdown(report)
 
-    assert "# CrossViewLab report" in rendered
+    assert "# DLL Injection Lab report" in rendered
     assert "triage signals, not proof of compromise" in rendered
 
 

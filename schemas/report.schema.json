@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/bsmensah-ctrl/CrossViewLab/raw/main/schemas/report.schema.json",
-  "title": "CrossViewLab Report",
+  "$id": "https://github.com/bsmensah-ctrl/DLL-Injection-Lab/raw/main/schemas/report.schema.json",
+  "title": "DLL Injection Lab Report",
   "type": "object",
   "required": ["schema_version", "tool", "mode", "inputs", "summary", "findings"],
   "properties": {
@@ -10,27 +10,33 @@
       "type": "object",
       "required": ["name", "version"],
       "properties": {
-        "name": { "const": "CrossViewLab" },
+        "name": { "const": "DLL Injection Lab" },
         "version": { "type": "string" }
       },
       "additionalProperties": false
     },
-    "mode": { "const": "offline-artifact-only" },
+    "mode": { "enum": ["offline-artifact-only", "synthetic-event-only"] },
     "inputs": {
       "type": "object",
-      "required": ["baseline_inventory", "observed_inventory"],
       "properties": {
         "baseline_inventory": { "type": "string" },
         "observed_inventory": { "type": "string" },
-        "entry_bytes": { "type": "string" }
+        "entry_bytes": { "type": "string" },
+        "event_stream": { "type": "string" },
+        "scenarios": { "type": "string" }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "anyOf": [
+        { "required": ["baseline_inventory", "observed_inventory"] },
+        { "required": ["event_stream", "scenarios"] }
+      ]
     },
     "summary": {
       "type": "object",
       "required": ["finding_count", "by_severity", "by_type"],
       "properties": {
         "finding_count": { "type": "integer", "minimum": 0 },
+        "event_count": { "type": "integer", "minimum": 0 },
         "by_severity": {
           "type": "object",
           "additionalProperties": { "type": "integer", "minimum": 0 }

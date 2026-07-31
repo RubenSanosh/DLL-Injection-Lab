@@ -16,7 +16,7 @@ body:
   - type: input
     id: version
     attributes:
-      label: CrossViewLab and Python versions
+      label: DLL Injection Lab and Python versions
     validations:
       required: true
   - type: textarea

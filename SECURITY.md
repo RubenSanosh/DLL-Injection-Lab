@@ -14,6 +14,6 @@ mitigation. You should receive an acknowledgment within seven days.
 
 ## Scope
 
-CrossViewLab parses untrusted JSON artifacts. Parser crashes, path handling
+DLL Injection Lab parses untrusted JSON and JSONL artifacts. Parser crashes, path handling
 issues, unsafe output rendering, dependency compromise, and violations of the
 offline-only boundary are in scope.
