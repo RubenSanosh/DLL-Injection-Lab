@@ -12,15 +12,6 @@ not mean the simulator performs the technique.
 
 ## Five correlated signals
 
-## Benign-lookalike Tuning Matrix
-
-| Synthetic Action | Common Benign Explanation | Useful Enrichment Fields | Analyst Verification Question | Why No Standalone Alert |
-| :--- | :--- | :--- | :--- | :--- |
-| Cross-process handle | Debuggers, endpoint agents, or administrative tools requesting access. | signer, path, user, integrity level | Is the source binary a signed administrative/security tool? | Too common in normal OS/software operations to alert on alone. |
-| Remote memory allocation | Valid inter-process communications or legitimate monitoring apps. | parentage, prevalence, acquisition quality | Does the targeting process regularly allocate memory in peer processes? | Creates high false-positive rates if flagged independently. |
-| Remote thread context write | Legitimate thread manipulation by OS utilities or crash reporting tools. | signer, path, parentage | Is this execution part of an expected application framework task? | Context switching and thread writes happen natively in many frameworks. |
-| Remote thread execution | System diagnostics, profilers, or routine sub-routine execution. | user, path, prevalence | Was the target thread spawned by an authenticated system service? | Generating alerts here without context swamps analysts with noise. |
-| Unbacked memory execution | Dynamic JIT compilers or runtime script environments. | acquisition quality, integrity level, signer | Is the target process running a JIT engine (e.g., V8, .NET)? | JIT engines naturally execute unbacked memory blocks during standard runtime. |
 ### 1. Cross-process handle
 
 One fictional process requests access to a different fictional process. This is
@@ -48,6 +39,16 @@ raises confidence when it follows the first three observations.
 
 The fictional target records the expected synthetic module. Joining the module
 load to the preceding actor-target flow completes the built-in correlation.
+
+## Benign-lookalike tuning matrix
+
+| Synthetic action | Common benign explanation | Useful enrichment fields | Analyst verification question | Why no standalone alert |
+| :--- | :--- | :--- | :--- | :--- |
+| Cross-process handle | Debuggers, endpoint agents, or administrative tools requesting access. | signer, path, user, integrity level | Is the source binary an approved administrative or security tool? | Cross-process access is common in legitimate software. |
+| Remote memory allocation | Instrumentation, accessibility software, or endpoint products reserving memory in another process. | signer, path, parentage, prevalence | Is this actor-target pair expected in the environment? | Allocation does not establish what content or execution followed. |
+| Remote memory write | Debuggers, profilers, or approved instrumentation modifying a target process. | signer, path, user, actor-target prevalence | Did the same approved tool request the handle and allocation? | A write is ambiguous without content, target, and sequence context. |
+| Remote thread start | Debuggers, profilers, installers, or security products starting work in another process. | signer, path, user, integrity level, parentage | Is cross-process execution expected for this signed actor and target? | Legitimate tools can create remote threads during normal operation. |
+| Module image load | Approved plug-ins, extensions, or application components loading into a process. | signer, path, hash prevalence, user, acquisition quality | Is the module trusted, expected, and loaded from an approved path? | Image loads are routine and require the preceding actor-target chain for context. |
 
 ## Correlation contract
 
