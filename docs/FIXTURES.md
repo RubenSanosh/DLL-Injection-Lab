@@ -39,6 +39,22 @@ Include at least four cases:
 For each intentionally altered sample, document the expected rule ID. Always
 validate a generated JSON report against `schemas/report.schema.json`.
 
+## Invalid event-stream fixtures
+
+`fixtures/invalid/` contains small JSONL files that are expected to fail
+validation in `load_event_stream`. They exist so contributors have reusable,
+public examples of the validation boundary instead of only inline test data.
+
+| File | What's wrong |
+|---|---|
+| `malformed_json.jsonl` | Not valid JSON (an unquoted object key) |
+| `missing_required_field.jsonl` | A required string field (`module`) is empty |
+| `invalid_pid.jsonl` | A PID field (`actor_pid`) is negative |
+
+Each file is used in a parametrized test asserting the specific `InputError`
+message it should raise. If you add a new invalid fixture, add a row here and
+a corresponding test case.
+
 ## Interpreting findings
 
 A cross-view discrepancy is ambiguous by design. Collection timing, permissions,

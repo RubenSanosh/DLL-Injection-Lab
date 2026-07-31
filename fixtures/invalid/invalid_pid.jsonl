@@ -1,0 +1,1 @@
+{"schema_version": "1.0.0", "scenario": "classic", "flow_id": "invalid-pid-001", "tick": 1, "actor_pid": -1, "target_pid": 4200, "action": "cross_process_handle_open", "module": "synthetic://lab/telemetry-demo.dll", "description": "Synthetic event with a negative actor_pid.", "synthetic": true}

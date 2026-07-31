@@ -106,3 +106,19 @@ def test_public_event_fixtures_match_the_built_in_scenarios(scenario, fixture_na
     fixture = Path(__file__).resolve().parents[1] / "fixtures" / fixture_name
 
     assert load_event_stream(fixture) == simulate_scenario(scenario)
+
+
+@pytest.mark.parametrize(
+    ("fixture_name", "expected_message"),
+    [
+        ("malformed_json.jsonl", "invalid JSONL"),
+        ("missing_required_field.jsonl", "must be a non-empty string"),
+        ("invalid_pid.jsonl", "must be a non-negative integer"),
+    ],
+)
+def test_invalid_event_fixtures_raise_input_error(fixture_name, expected_message):
+    """Public invalid fixtures document the validation boundary in load_event_stream."""
+    fixture = Path(__file__).resolve().parents[1] / "fixtures" / "invalid" / fixture_name
+
+    with pytest.raises(InputError, match=expected_message):
+        load_event_stream(fixture)
