@@ -147,51 +147,49 @@ def detect_dll_injection_sequence(events: list[dict[str, Any]]) -> list[dict[str
 
     findings: list[dict[str, Any]] = []
     for flow_id, flow_events in sorted(flows.items()):
-        ordered = sorted(flow_events, key=lambda event: event["tick"])
-        actions = [event["action"] for event in ordered]
-        positions: list[int] = []
-        cursor = 0
-        for required_action in DLL_INJECTION_SEQUENCE:
-            try:
-                position = actions.index(required_action, cursor)
-            except ValueError:
-                break
-            positions.append(position)
-            cursor = position + 1
+        candidates: dict[tuple[int, int, str], list[dict[str, Any]]] = {}
+        for event in flow_events:
+            identity = (event["actor_pid"], event["target_pid"], event["module"])
+            candidates.setdefault(identity, []).append(event)
 
-        if len(positions) != len(DLL_INJECTION_SEQUENCE):
-            continue
+        for (actor_pid, target_pid, module), candidate_events in sorted(candidates.items()):
+            if actor_pid == target_pid:
+                continue
 
-        matched = [ordered[position] for position in positions]
-        actor_pid = matched[0]["actor_pid"]
-        target_pid = matched[0]["target_pid"]
-        if actor_pid == target_pid:
-            continue
-        module = matched[0]["module"]
-        if any(
-            event["actor_pid"] != actor_pid
-            or event["target_pid"] != target_pid
-            or event["module"] != module
-            for event in matched
-        ):
-            continue
-        findings.append(
-            _finding(
-                "synthetic-dll-injection-sequence",
-                "high",
-                f"Synthetic DLL-injection sequence detected in flow {flow_id}",
-                {
-                    "scenario": matched[0]["scenario"],
-                    "flow_id": flow_id,
-                    "actor_pid": actor_pid,
-                    "target_pid": target_pid,
-                    "module": module,
-                    "matched_actions": list(DLL_INJECTION_SEQUENCE),
-                    "first_tick": matched[0]["tick"],
-                    "last_tick": matched[-1]["tick"],
-                    "synthetic": True,
-                    "attack_technique": "T1055.001",
-                },
+            ordered = sorted(candidate_events, key=lambda event: event["tick"])
+            actions = [event["action"] for event in ordered]
+            positions: list[int] = []
+            cursor = 0
+            for required_action in DLL_INJECTION_SEQUENCE:
+                try:
+                    position = actions.index(required_action, cursor)
+                except ValueError:
+                    break
+                positions.append(position)
+                cursor = position + 1
+
+            if len(positions) != len(DLL_INJECTION_SEQUENCE):
+                continue
+
+            matched = [ordered[position] for position in positions]
+            findings.append(
+                _finding(
+                    "synthetic-dll-injection-sequence",
+                    "high",
+                    f"Synthetic DLL-injection sequence detected in flow {flow_id}",
+                    {
+                        "scenario": matched[0]["scenario"],
+                        "flow_id": flow_id,
+                        "actor_pid": actor_pid,
+                        "target_pid": target_pid,
+                        "module": module,
+                        "matched_actions": list(DLL_INJECTION_SEQUENCE),
+                        "matched_ticks": [event["tick"] for event in matched],
+                        "first_tick": matched[0]["tick"],
+                        "last_tick": matched[-1]["tick"],
+                        "synthetic": True,
+                        "attack_technique": "T1055.001",
+                    },
+                )
             )
-        )
     return findings

@@ -3,8 +3,9 @@ from pathlib import Path
 
 from jsonschema import validate
 
-from crossview_lab.analyzer import analyze
+from crossview_lab.analyzer import analyze, analyze_events
 from crossview_lab.formatters import to_markdown, to_sarif
+from crossview_lab.simulator import simulate_scenario
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "fixtures"
@@ -50,3 +51,15 @@ def test_sarif_renderer_emits_results_and_rules():
     assert sarif["version"] == "2.1.0"
     assert len(sarif["runs"][0]["results"]) == 2
     assert len(sarif["runs"][0]["tool"]["driver"]["rules"]) == 2
+
+
+def test_sarif_rule_id_for_synthetic_sequence_is_stable():
+    report = analyze_events(simulate_scenario("classic"), source="built-in:classic")
+
+    sarif = json.loads(to_sarif(report))
+    driver = sarif["runs"][0]["tool"]["driver"]
+    result = sarif["runs"][0]["results"][0]
+
+    assert [rule["id"] for rule in driver["rules"]] == ["synthetic-dll-injection-sequence"]
+    assert result["ruleId"] == "synthetic-dll-injection-sequence"
+    assert driver["rules"][0]["helpUri"].endswith("#the-chain-your-detector-must-catch")

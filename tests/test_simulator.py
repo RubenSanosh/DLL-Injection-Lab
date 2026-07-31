@@ -43,6 +43,29 @@ def test_incomplete_sequence_does_not_produce_a_finding():
     assert detect_dll_injection_sequence(events) == []
 
 
+def test_reordered_sequence_does_not_produce_a_finding():
+    events = simulate_scenario("classic")
+    events[2]["tick"], events[3]["tick"] = events[3]["tick"], events[2]["tick"]
+
+    assert detect_dll_injection_sequence(events) == []
+
+
+def test_unrelated_repeated_event_does_not_hide_a_valid_sequence():
+    events = simulate_scenario("classic")
+    unrelated_write = events[2].copy()
+    unrelated_write["actor_pid"] = 9999
+    unrelated_write["tick"] = 3
+    for event in events[2:]:
+        event["tick"] += 1
+    events.append(unrelated_write)
+
+    findings = detect_dll_injection_sequence(events)
+
+    assert len(findings) == 1
+    assert findings[0]["evidence"]["actor_pid"] == 4100
+    assert findings[0]["evidence"]["matched_ticks"] == [1, 2, 4, 5, 6]
+
+
 def test_sequence_requires_consistent_actor_target_and_module():
     changed_target = simulate_scenario("classic")
     changed_target[2]["target_pid"] = 4201

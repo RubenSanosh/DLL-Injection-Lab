@@ -54,7 +54,10 @@ def to_sarif(report: dict[str, Any]) -> str:
             {
                 "id": rule_id,
                 "shortDescription": {"text": finding["title"]},
-                "helpUri": "https://github.com/bsmensah-ctrl/DLL-Injection-Lab#what-it-detects",
+                "helpUri": (
+                    "https://github.com/bsmensah-ctrl/"
+                    "DLL-Injection-Lab#the-chain-your-detector-must-catch"
+                ),
             },
         )
         evidence = finding["evidence"]
