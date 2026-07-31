@@ -192,6 +192,10 @@ The implementation in this repository was rewritten, tested, and scoped around
 the reusable defensive idea rather than publishing those unverified outputs.
 No claim in this repository depends on the model-generated transcript.
 
+The [local-LLM output audit](docs/LLM_OUTPUT_AUDIT.md) records the failed outputs,
+the parts that survived review, and a reusable ten-point checklist for evaluating
+generated security code.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
