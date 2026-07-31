@@ -4,7 +4,7 @@
 
 <div align="center">
 
-# DLL Injection Lab 🧪
+# DLL Injection Lab
 
 ### See the full DLL-injection telemetry chain—without injecting a DLL.
 
@@ -19,7 +19,7 @@ No VM. No administrator rights. No malware. Zero live processes touched.
 [![MITRE ATT&CK T1055.001](https://img.shields.io/badge/ATT%26CK-T1055.001-f59e0b.svg)](https://attack.mitre.org/techniques/T1055/001/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-14b8a6.svg)](LICENSE)
 
-**If this saves you an afternoon of lab setup, ⭐ star it so another defender finds it.**
+**If this saves you an afternoon of lab setup, star the repository so another defender finds it.**
 
 </div>
 
@@ -65,13 +65,13 @@ analysts, instructors, and detection engineers.
 
 | Capability | Why it matters |
 |---|---|
-| 🧬 Full synthetic injection chain | Practice correlating five signals instead of matching one noisy event |
-| 🟢 Clean cooperative control | Prove the detector ignores an approved same-process plug-in load |
-| 🧠 Explainable finding | See the exact matched actions, flow ID, PIDs, ticks, module, and ATT&CK mapping |
-| 📦 JSONL event generator | Feed deterministic telemetry into your own parser, SIEM demo, or unit test |
-| 📊 JSON, Markdown, and SARIF | Use the same result in scripts, reports, GitHub, or classroom submissions |
-| 🧱 Offline boundary test | CI fails if live-process libraries or Windows process-memory APIs enter the package |
-| ⚡ Zero runtime dependencies | Clone, install, and run—no service stack or agent required |
+| Full synthetic injection chain | Practice correlating five signals instead of matching one noisy event |
+| Clean cooperative control | Prove the detector ignores an approved same-process plug-in load |
+| Explainable finding | See the exact matched actions, flow ID, PIDs, ticks, module, and ATT&CK mapping |
+| JSONL event generator | Feed deterministic telemetry into your own parser, SIEM demo, or unit test |
+| JSON, Markdown, and SARIF | Use the same result in scripts, reports, GitHub, or classroom submissions |
+| Offline boundary test | CI fails if live-process libraries or Windows process-memory APIs enter the package |
+| Zero runtime dependencies | Clone, install, and run—no service stack or agent required |
 
 ## The chain your detector must catch
 
@@ -218,22 +218,14 @@ GitHub Actions runs the suite on Python 3.10, 3.11, 3.12, and 3.13.
 Have an idea? Open a [feature request](https://github.com/bsmensah-ctrl/DLL-Injection-Lab/issues/new/choose)
 or send a pull request. New scenarios must remain synthetic and deterministic.
 
-## Evidence over hype
-
-The first local-LLM prototype produced broken mixed-language code and later crossed
-its own stated offline boundary. This repository was independently rewritten and
-its claims come from executable tests, schemas, package builds, and CI. The
-[LLM output audit](docs/LLM_OUTPUT_AUDIT.md) shows exactly what failed and what was
-discarded.
-
-## Help the project grow
+## Contributing
 
 If you learned something, used a fixture, or saved setup time:
 
-1. ⭐ **Star the repository**—it is the clearest signal that this should keep growing.
-2. 🧪 Add a synthetic scenario or clean control.
-3. 📣 Share the 60-second demo with a SOC, blue-team, or cybersecurity class.
-4. 🐛 Report false positives or confusing evidence.
+1. **Star the repository** so other detection engineers can find it.
+2. Add a synthetic scenario or clean control.
+3. Share the 60-second demo with a SOC, blue-team, or cybersecurity class.
+4. Report false positives or confusing evidence.
 
 ## License
 

@@ -54,9 +54,7 @@
           </p>
           <div class="hero-actions">
             <a class="button primary" href="#lab">Run the demo</a>
-            <a class="button secondary" href="https://github.com/bsmensah-ctrl/DLL-Injection-Lab">
-              View on GitHub <span aria-hidden="true">↗</span>
-            </a>
+            <a class="button secondary" href="https://github.com/bsmensah-ctrl/DLL-Injection-Lab">View on GitHub</a>
           </div>
           <ul class="proof-list" aria-label="Project facts">
             <li><strong>0</strong><span>runtime dependencies</span></li>
@@ -64,15 +62,11 @@
             <li><strong>5</strong><span>correlated signals</span></li>
           </ul>
         </div>
-        <div class="hero-visual" aria-label="Synthetic telemetry visualization">
-          <div class="radar" aria-hidden="true">
-            <span class="radar-ring ring-one"></span>
-            <span class="radar-ring ring-two"></span>
-            <span class="radar-ring ring-three"></span>
-            <span class="radar-sweep"></span>
-            <span class="radar-core">01</span>
-          </div>
-          <div class="safety-chip"><span aria-hidden="true">✓</span> Zero live processes touched</div>
+        <div class="hero-visual">
+          <img
+            src="social-preview.jpg"
+            alt="DLL Injection Lab. Simulate. Detect. Learn. Zero live processes touched."
+          >
         </div>
       </section>
 
@@ -114,7 +108,7 @@
               <span class="live-label"><span class="pulse"></span> LIVE</span>
             </div>
             <div id="result-card" class="result-card finding">
-              <div id="result-icon" class="result-icon" aria-hidden="true">!</div>
+              <div id="result-icon" class="result-icon" aria-hidden="true">HIGH</div>
               <p id="result-kicker" class="result-kicker">HIGH CONFIDENCE</p>
               <h3 id="result-title">Synthetic sequence detected</h3>
               <p id="result-copy">
@@ -124,11 +118,11 @@
             <dl class="evidence" id="evidence-list">
               <div><dt>Technique</dt><dd>T1055.001</dd></div>
               <div><dt>Flow</dt><dd>classic-dll-injection-001</dd></div>
-              <div><dt>Actor → target</dt><dd>4100 → 4200</dd></div>
+              <div><dt>Actor / target</dt><dd>4100 / 4200</dd></div>
               <div><dt>Module</dt><dd>synthetic://lab/telemetry-demo.dll</dd></div>
             </dl>
             <button class="json-toggle" type="button" id="json-toggle" aria-expanded="false">
-              View JSON evidence <span aria-hidden="true">⌄</span>
+              View JSON evidence
             </button>
             <pre id="json-output" class="json-output" hidden></pre>
           </aside>
@@ -136,7 +130,6 @@
       </section>
 
       <section class="boundary" aria-labelledby="boundary-title">
-        <div class="boundary-icon" aria-hidden="true">◇</div>
         <div>
           <p class="eyebrow">The hard boundary</p>
           <h2 id="boundary-title">Telemetry, never technique.</h2>
@@ -153,9 +146,7 @@
         <h2 id="cta-title">Clone it. Test it. Extend it.</h2>
         <p>Get JSONL fixtures, Markdown/JSON/SARIF output, CI examples, and the Python detector.</p>
         <div class="hero-actions centered">
-          <a class="button primary" href="https://github.com/bsmensah-ctrl/DLL-Injection-Lab">
-            Star on GitHub <span aria-hidden="true">★</span>
-          </a>
+          <a class="button primary" href="https://github.com/bsmensah-ctrl/DLL-Injection-Lab">Star on GitHub</a>
           <a class="button secondary" href="https://github.com/bsmensah-ctrl/DLL-Injection-Lab#your-first-detection-in-60-seconds">
             Run locally
           </a>
@@ -165,7 +156,7 @@
 
     <footer>
       <span>DLL Injection Lab · MIT licensed · synthetic by design</span>
-      <a href="https://attack.mitre.org/techniques/T1055/001/">ATT&amp;CK T1055.001 ↗</a>
+      <a href="https://attack.mitre.org/techniques/T1055/001/">ATT&amp;CK T1055.001</a>
     </footer>
   </body>
 </html>

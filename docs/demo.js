@@ -112,7 +112,7 @@ function renderResult() {
   const finding = hasFinding();
   resultCard.classList.toggle("finding", finding);
   resultCard.classList.toggle("clear", !finding);
-  resultIcon.textContent = finding ? "!" : "✓";
+  resultIcon.textContent = finding ? "HIGH" : "CLEAR";
 
   if (finding) {
     resultKicker.textContent = "HIGH CONFIDENCE";
@@ -131,7 +131,7 @@ function renderResult() {
   evidenceList.innerHTML = `
     <div><dt>Technique</dt><dd>${finding ? "T1055.001" : "not assigned"}</dd></div>
     <div><dt>Flow</dt><dd>${escapeText(scenario.flowId)}</dd></div>
-    <div><dt>Actor → target</dt><dd>${scenario.actorPid} → ${scenario.targetPid}</dd></div>
+    <div><dt>Actor / target</dt><dd>${scenario.actorPid} / ${scenario.targetPid}</dd></div>
     <div><dt>Module</dt><dd>${escapeText(scenario.module)}</dd></div>`;
 
   jsonOutput.textContent = JSON.stringify(
@@ -180,7 +180,7 @@ document.querySelector("#reset-events").addEventListener("click", () => {
 jsonToggle.addEventListener("click", () => {
   const expanded = jsonToggle.getAttribute("aria-expanded") === "true";
   jsonToggle.setAttribute("aria-expanded", String(!expanded));
-  jsonToggle.firstChild.textContent = expanded ? "View JSON evidence " : "Hide JSON evidence ";
+  jsonToggle.textContent = expanded ? "View JSON evidence" : "Hide JSON evidence";
   jsonOutput.hidden = expanded;
 });
 
