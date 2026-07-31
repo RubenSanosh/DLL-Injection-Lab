@@ -54,6 +54,20 @@ public examples of the validation boundary instead of only inline test data.
 Each file is used in a parametrized test asserting the specific `InputError`
 message it should raise. If you add a new invalid fixture, add a row here and
 a corresponding test case.
+## Synthetic event-stream variants
+
+Use the built-in classic stream variants to exercise delivery behavior without
+editing JSONL by hand:
+
+- `complete` emits the five canonical records.
+- `missing-thread` removes the remote-thread record and should not alert.
+- `out-of-order-arrival` writes the thread record before the write record while
+  preserving their event-time ticks; the detector should still alert.
+- `duplicate-write` emits the same remote-write record twice; the detector should
+  still return one correlated finding.
+
+Generate a variant with `dll-injection-lab simulate --variant NAME`. These streams
+remain fictional, deterministic, and safe to commit as regression fixtures.
 
 ## Interpreting findings
 

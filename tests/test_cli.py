@@ -3,6 +3,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "fixtures"
 
@@ -85,3 +87,50 @@ def test_cli_simulate_can_feed_cli_detect(tmp_path):
     )
 
     assert json.loads(result.stdout)["summary"]["finding_count"] == 1
+
+
+@pytest.mark.parametrize(
+    ("variant", "expected_event_count", "expected_finding_count"),
+    [
+        ("missing-thread", 4, 0),
+        ("out-of-order-arrival", 5, 1),
+        ("duplicate-write", 6, 1),
+    ],
+)
+def test_cli_stream_variants_exercise_lossy_delivery(
+    tmp_path, variant, expected_event_count, expected_finding_count
+):
+    events = tmp_path / f"{variant}.jsonl"
+    subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "crossview_lab",
+            "simulate",
+            "--variant",
+            variant,
+            "--output",
+            str(events),
+        ],
+        check=True,
+    )
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "crossview_lab",
+            "detect",
+            "--events",
+            str(events),
+            "--format",
+            "json",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    report = json.loads(result.stdout)
+    assert report["summary"]["event_count"] == expected_event_count
+    assert report["summary"]["finding_count"] == expected_finding_count

@@ -10,7 +10,13 @@ from pathlib import Path
 from .analyzer import analyze, analyze_events
 from .errors import InputError
 from .formatters import to_json, to_markdown, to_sarif
-from .simulator import SCENARIOS, events_to_jsonl, load_event_stream, simulate_scenario
+from .simulator import (
+    SCENARIOS,
+    STREAM_VARIANTS,
+    events_to_jsonl,
+    load_event_stream,
+    simulate_scenario,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -24,10 +30,12 @@ def build_parser() -> argparse.ArgumentParser:
 
     demo = subparsers.add_parser("demo", help="Run the built-in synthetic detection demo")
     demo.add_argument("--scenario", choices=SCENARIOS, default="classic")
+    _add_variant_argument(demo)
     _add_report_arguments(demo)
 
     simulate = subparsers.add_parser("simulate", help="Emit a synthetic JSONL event stream")
     simulate.add_argument("--scenario", choices=SCENARIOS, default="classic")
+    _add_variant_argument(simulate)
     simulate.add_argument("--output", type=Path, help="Write JSONL to a file instead of stdout")
 
     detect = subparsers.add_parser("detect", help="Detect a supplied synthetic JSONL event stream")
@@ -59,6 +67,15 @@ def _add_report_arguments(parser: argparse.ArgumentParser) -> None:
     )
 
 
+def _add_variant_argument(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument(
+        "--variant",
+        choices=STREAM_VARIANTS,
+        default="complete",
+        help="Model complete, missing, delayed, or duplicate event delivery",
+    )
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     arguments = list(argv) if argv is not None else sys.argv[1:]
@@ -68,11 +85,11 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     try:
         if args.command == "simulate":
-            rendered = events_to_jsonl(simulate_scenario(args.scenario))
+            rendered = events_to_jsonl(simulate_scenario(args.scenario, variant=args.variant))
             return _write_output(rendered, args.output, parser)
         if args.command == "demo":
-            events = simulate_scenario(args.scenario)
-            report = analyze_events(events, source=f"built-in:{args.scenario}")
+            events = simulate_scenario(args.scenario, variant=args.variant)
+            report = analyze_events(events, source=f"built-in:{args.scenario}:{args.variant}")
         elif args.command == "detect":
             report = analyze_events(load_event_stream(args.events), source=str(args.events))
         else:

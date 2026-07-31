@@ -14,6 +14,12 @@ from typing import Any
 from .errors import InputError
 
 SCENARIOS = ("classic", "cooperative")
+STREAM_VARIANTS = (
+    "complete",
+    "missing-thread",
+    "out-of-order-arrival",
+    "duplicate-write",
+)
 
 _CLASSIC_ACTIONS = (
     ("cross_process_handle_open", "A synthetic process handle is requested."),
@@ -30,10 +36,16 @@ _COOPERATIVE_ACTIONS = (
 )
 
 
-def simulate_scenario(name: str) -> list[dict[str, Any]]:
+def simulate_scenario(name: str, *, variant: str = "complete") -> list[dict[str, Any]]:
     """Return a deterministic synthetic event stream for an educational scenario."""
     if name not in SCENARIOS:
         raise InputError(f"unknown scenario {name!r}; expected one of {', '.join(SCENARIOS)}")
+    if variant not in STREAM_VARIANTS:
+        raise InputError(
+            f"unknown stream variant {variant!r}; expected one of {', '.join(STREAM_VARIANTS)}"
+        )
+    if name != "classic" and variant != "complete":
+        raise InputError("stream variants are only supported for the classic scenario")
 
     if name == "classic":
         actions = _CLASSIC_ACTIONS
@@ -46,7 +58,7 @@ def simulate_scenario(name: str) -> list[dict[str, Any]]:
         module = "synthetic://lab/approved-plugin.dll"
         flow_id = "cooperative-plugin-001"
 
-    return [
+    events = [
         {
             "schema_version": "1.0.0",
             "scenario": name,
@@ -61,6 +73,24 @@ def simulate_scenario(name: str) -> list[dict[str, Any]]:
         }
         for tick, (action, description) in enumerate(actions, start=1)
     ]
+    return _apply_stream_variant(events, variant)
+
+
+def _apply_stream_variant(events: list[dict[str, Any]], variant: str) -> list[dict[str, Any]]:
+    """Apply a deterministic delivery failure without changing event-time ticks."""
+    if variant == "complete":
+        return events
+    if variant == "missing-thread":
+        return [event for event in events if event["action"] != "remote_thread_start"]
+    if variant == "out-of-order-arrival":
+        reordered = list(events)
+        reordered[2], reordered[3] = reordered[3], reordered[2]
+        return reordered
+
+    duplicated = list(events)
+    remote_write = next(event for event in events if event["action"] == "remote_memory_write")
+    duplicated.insert(3, remote_write.copy())
+    return duplicated
 
 
 def events_to_jsonl(events: Iterable[dict[str, Any]]) -> str:
